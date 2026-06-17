@@ -1,5 +1,6 @@
 from parser import load_game
 from snapshot import generate_snapshots
+from database import create_database
 
 
 def main():
@@ -7,13 +8,10 @@ def main():
 
     snapshots = generate_snapshots(game)
 
+    create_database()
+
     print(f"Generated {len(snapshots)} snapshots")
-
-    print("\nFirst Snapshot:")
-    print(snapshots[0])
-
-    print("\nLast Snapshot:")
-    print(snapshots[-1])
+    print("Database initialized successfully")
 
 
 if __name__ == "__main__":
