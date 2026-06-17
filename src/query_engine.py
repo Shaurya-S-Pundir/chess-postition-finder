@@ -22,6 +22,7 @@ def count_rook_on_square(square, db_path="positions.db"):
 
     return count
 
+
 def find_positions(
     conn,
     rook_square=None,
