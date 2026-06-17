@@ -1,23 +1,26 @@
 from parser import load_game
+from material import calculate_material
 
 
 def main():
     game = load_game("data/raw/sample.pgn")
 
-    print(f"White: {game.headers['White']}")
-    print(f"Black: {game.headers['Black']}")
-    print(f"Opening: {game.headers['Opening']}")
-    print()
-
     board = game.board()
 
-    move_count = 1
+    white_material, black_material = calculate_material(board)
+
+    print(
+        f"Initial Material -> White: {white_material}, Black: {black_material}"
+    )
 
     for move in game.mainline_moves():
-        print(move_count, move.uci())
-
         board.push(move)
-        move_count += 1
+
+        white_material, black_material = calculate_material(board)
+
+        print(
+            f"{move.uci()} -> White: {white_material}, Black: {black_material}"
+        )
 
 
 if __name__ == "__main__":
