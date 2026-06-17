@@ -35,9 +35,14 @@ def find_positions(
     params = []
 
     if rook_square and side:
-        column = f"{side}_rooks"
-        query += f" AND {column} LIKE ?"
-        params.append(f"%{rook_square}%")
+        query = (
+            "SELECT positions.* FROM positions "
+            "JOIN piece_occurrences ON piece_occurrences.position_id = positions.id "
+            "WHERE piece_occurrences.piece_type = 'rook' "
+            "AND piece_occurrences.color = ? "
+            "AND piece_occurrences.square = ?"
+        )
+        params.extend([side, rook_square])
 
     if min_white_material is not None:
         query += " AND white_material >= ?"
