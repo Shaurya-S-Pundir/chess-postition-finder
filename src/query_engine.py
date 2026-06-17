@@ -56,5 +56,4 @@ def find_positions(
         params.append(max_black_material)
 
     positions = conn.execute(query, params).fetchall()
-    conn.close()
     return positions
