@@ -1,4 +1,8 @@
+import os
 import sqlite3
+
+# Project root is one level above this file (src/)
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 from parser import load_game
 from database import (
@@ -8,14 +12,17 @@ from database import (
 )
 from material import calculate_material
 from occurrences import extract_piece_occurrences
-from query_engine import count_rook_on_square
+from query_engine import count_rook_on_square, find_positions
 
 def main():
-    create_database()
+    db_path = os.path.join(ROOT_DIR, "positions.db")
+    pgn_path = os.path.join(ROOT_DIR, "data", "raw", "sample.pgn")
 
-    conn = sqlite3.connect("positions.db")
+    create_database(db_path)
 
-    game = load_game("data/raw/sample.pgn")
+    conn = sqlite3.connect(db_path)
+
+    game = load_game(pgn_path)
 
     board = game.board()
 
@@ -75,9 +82,24 @@ def main():
 
     print(f"Stored {snapshots_stored} positions")
 
-    # Querying 
-    rook_count = count_rook_on_square("b5")
+    conn = sqlite3.connect(db_path)
+
+    # Querying
+    rook_count = count_rook_on_square("b5", db_path=db_path)
     print(f"Number of positions with a white rook on h1: {rook_count}")
+
+    # Find positions with white rook on g5, black on a8, white material >= 35, black material <= 40
+    positions = find_positions(
+        conn,
+        rook_square="g5",
+        side="white",
+        min_white_material=35,
+        max_black_material=40,
+    )   
+
+    print(f"\nFound {len(positions)} positions matching criteria:")
+    for pos in positions:
+        print(pos)
 
 
 if __name__ == "__main__":
