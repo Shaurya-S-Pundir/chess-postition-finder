@@ -1,26 +1,19 @@
 from parser import load_game
-from material import calculate_material
+from snapshot import generate_snapshots
 
 
 def main():
     game = load_game("data/raw/sample.pgn")
 
-    board = game.board()
+    snapshots = generate_snapshots(game)
 
-    white_material, black_material = calculate_material(board)
+    print(f"Generated {len(snapshots)} snapshots")
 
-    print(
-        f"Initial Material -> White: {white_material}, Black: {black_material}"
-    )
+    print("\nFirst Snapshot:")
+    print(snapshots[0])
 
-    for move in game.mainline_moves():
-        board.push(move)
-
-        white_material, black_material = calculate_material(board)
-
-        print(
-            f"{move.uci()} -> White: {white_material}, Black: {black_material}"
-        )
+    print("\nLast Snapshot:")
+    print(snapshots[-1])
 
 
 if __name__ == "__main__":
